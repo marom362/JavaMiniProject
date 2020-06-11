@@ -1,50 +1,54 @@
 package geometries;
 
-import primitives.Point3D;
 import primitives.Ray;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * class Geometries implements Intersectable
- * Contains a list of geometries
- *  @author marom & haleli
  */
-
 public class Geometries implements Intersectable {
 
-    private List<Intersectable> _geometriesList;
+    private List<Intersectable> _geometries = new LinkedList<>();
 
-    public Geometries()
-    {
-        _geometriesList= new ArrayList<Intersectable>();
+    public Geometries(Intersectable... _geometries) {
+        add(_geometries);
     }
-    public Geometries(Intersectable... geometries)
-    {
-        _geometriesList=List.of(geometries);
-    }
+
     public void add(Intersectable... geometries) {
-
-        List<Intersectable> temp = List.of(geometries);
-        _geometriesList.addAll(temp);
+//        for (Intersectable geo : geometries) {
+//            _geometries.add(geo);
+//        }
+        _geometries.addAll(Arrays.asList(geometries));
     }
-    //Execute the action for the entire list of geometries.
+
+    /**
+     * Na le Hasbir befrotrot
+     *
+     * @param ray the ray that intersect the geometries
+     * @return list of Point3D that intersect the osef
+     */
     @Override
-    public List<Point3D> findIntersections(Ray ray) {
+    public List<GeoPoint> findIntersections(Ray ray) {
+        List<GeoPoint> intersections = null;
 
-        List<Point3D> list=new ArrayList<Point3D>();
-        for (int i = 0; i <this.get_geometriesList().size() ; i++)
-        {
-            List<Point3D> result=this._geometriesList.get(i).findIntersections(ray);
-            if(result!=null)
-                list.addAll(result);
-
+        for (Intersectable geo : _geometries) {
+            List<GeoPoint> tempIntersections = geo.findIntersections(ray);
+            if (tempIntersections != null) {
+                if (intersections == null)
+                    intersections = new LinkedList<>();
+                intersections.addAll(tempIntersections);
+            }
         }
-        if(list.isEmpty())
-            return null;
-        return list;
+        return intersections;
+
     }
 
-    public List<Intersectable> get_geometriesList() {
-        return _geometriesList;
+    public void remove(Intersectable... intersectables) {
+        for (Intersectable geo : _geometries) {
+            _geometries.remove(geo);
+        }
     }
 }

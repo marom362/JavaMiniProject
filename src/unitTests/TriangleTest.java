@@ -1,5 +1,6 @@
 package unitTests;
 
+import geometries.Intersectable;
 import geometries.Triangle;
 import org.junit.Test;
 import primitives.Point3D;
@@ -30,7 +31,7 @@ public class TriangleTest {
         Point3D p4=p1.add(v1.scale(0.5).add(v2.scale(0.2)));
         Vector vector=new Vector(1,2,0);
         Ray ray=new Ray(p4.add(vector.scale(-1)),vector.normalize());
-        List<Point3D> result=triangle.findIntersections(ray);
+        List<Intersectable.GeoPoint> result=triangle.findIntersections(ray);
         assertEquals("Wrong number of points", 1, result.size());
         assertEquals("Ray crosses sphere", List.of(p4), result);
 

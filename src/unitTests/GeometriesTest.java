@@ -1,9 +1,6 @@
 package unitTests;
 
-import geometries.Geometries;
-import geometries.Plane;
-import geometries.Sphere;
-import geometries.Triangle;
+import geometries.*;
 import org.junit.Test;
 import primitives.Point3D;
 import primitives.Ray;
@@ -29,7 +26,7 @@ public class GeometriesTest
 
         // =============== Boundary Values Tests ==================
         // TC01:there is no geometries in the list (0 points)
-        List<Point3D> result=geometries.findIntersections(ray);
+        List<Intersectable.GeoPoint> result=geometries.findIntersections(ray);
         assertEquals("Wrong number of points", null,result);
 
         //TC02: The ray has no interactions point with any geometries in the array

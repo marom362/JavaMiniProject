@@ -1,22 +1,24 @@
 package geometries;
 
+import elements.Material;
+import primitives.Color;
 import primitives.Point3D;
 import primitives.Ray;
-import primitives.Util;
 import primitives.Vector;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
+import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
 /**
  * Polygon class represents two-dimensional polygon in 3D Cartesian coordinate
  * system
  *
- * @author marom&haleli
+ * @author Dan
  */
-public class Polygon implements Geometry {
+public class Polygon extends Geometry {
     /**
      * List of polygon's vertices
      */
@@ -44,10 +46,13 @@ public class Polygon implements Geometry {
      *                                  <li>Three consequent vertices lay in the
      *                                  same line (180&#176; angle between two
      *                                  consequent edges)
-     *                                  <li>The polygon is concave (not convex></li>
+     *                                  <li>The polygon is concave (not convex)</li>
      *                                  </ul>
      */
-    public Polygon(Point3D... vertices) {
+    public Polygon(Color emissionLight, Material material, Point3D... vertices) {
+
+        super(emissionLight, material);
+
         if (vertices.length < 3)
             throw new IllegalArgumentException("A polygon can't have less than 3 vertices");
         _vertices = List.of(vertices);
@@ -59,7 +64,7 @@ public class Polygon implements Geometry {
 
         Vector n = _plane.getNormal();
 
-        //Subtracting any subsequent points will throw an IllegalArgumentException
+        // Subtracting any subsequent points will throw an IllegalArgumentException
         // because of Zero Vector if they are in the same point
         Vector edge1 = vertices[vertices.length - 1].subtract(vertices[vertices.length - 2]);
         Vector edge2 = vertices[0].subtract(vertices[vertices.length - 1]);
@@ -86,6 +91,14 @@ public class Polygon implements Geometry {
         }
     }
 
+    public Polygon(Color emissionLight, Point3D... vertices) {
+        this(emissionLight, new Material(0, 0, 0), vertices);
+    }
+
+    public Polygon(Point3D... vertices) {
+        this(Color.BLACK, new Material(0, 0, 0), vertices);
+//        this(new Color(java.awt.Color.RED),new Material(0,0,0),vertices);
+    }
 
     @Override
     public Vector getNormal(Point3D point) {
@@ -93,43 +106,35 @@ public class Polygon implements Geometry {
     }
 
     @Override
-    public List<Point3D> findIntersections(Ray ray)
-    {
-        List<Point3D> result=this._plane.findIntersections(ray);
-        if (result==null)
+    public List<GeoPoint> findIntersections(Ray ray) {
+        List<GeoPoint> palaneIntersections = _plane.findIntersections(ray);
+        if (palaneIntersections == null)
             return null;
-        List<Vector> vectors=new ArrayList<Vector>();
-        for (int i = 0; i <this._vertices.size()  ; i++)
-        {
-            vectors.add(this._vertices.get(i).subtract(ray.getP()));
+
+        Point3D p0 = ray.getPoint();
+        Vector v = ray.getDirection();
+
+        Vector v1 = _vertices.get(1).subtract(p0);
+        Vector v2 = _vertices.get(0).subtract(p0);
+        double sign = v.dotProduct(v1.crossProduct(v2));
+        if (isZero(sign))
+            return null;
+
+        boolean positive = sign > 0;
+
+        for (int i = _vertices.size() - 1; i > 0; --i) {
+            v1 = v2;
+            v2 = _vertices.get(i).subtract(p0);
+            sign = alignZero(v.dotProduct(v1.crossProduct(v2)));
+            if (isZero(sign)) return null;
+            if (positive != (sign > 0)) return null;
         }
-        List<Vector> normals=new ArrayList<>();
-        for (int i = 0; i <this._vertices.size()-1 ; i++)
-        {
-           normals.add(vectors.get(i).crossProduct(vectors.get(i+1)).normalize());
+
+        //for GeoPoint
+        List<GeoPoint> result = new LinkedList<>();
+        for (GeoPoint geo : palaneIntersections) {
+            result.add(new GeoPoint(this, geo.getPoint()));
         }
-        normals.add(vectors.get(vectors.size()-1).crossProduct(vectors.get(0)).normalize());
-        double [] t=new double[normals.size()];
-        for (int i = 0; i <normals.size() ; i++)
-        {
-            t [i]= Util.alignZero(ray.getVector().dotProduct(normals.get(i)));
-        }
-        for (int i = 0; i <normals.size() ; i++)
-        {
-            if(t[i]==0)
-                return null;
-        }
-        if(t[0]>0)
-            for (int i = 1; i <normals.size() ; i++)
-            {
-                if(t[i]<0)
-                  return null;
-            }
-        if (t[0]<0)
-            for (int i = 1; i <normals.size() ; i++) {
-                if (t[i] > 0)
-                return null;
-            }
         return result;
     }
 }

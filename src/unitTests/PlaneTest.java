@@ -1,5 +1,6 @@
 package unitTests;
 
+import geometries.Intersectable;
 import geometries.Plane;
 import org.junit.Test;
 import primitives.Point3D;
@@ -68,7 +69,7 @@ public class PlaneTest {
 
         // TC01: Ray intersects the plane (point:1)
         Ray ray=new Ray(new Point3D(1,1,2),new Vector(0,0,-1));
-        List<Point3D> result=plane.findIntersections(ray);
+        List<Intersectable.GeoPoint> result=plane.findIntersections(ray);
         assertEquals("Wrong number of points", 1, result.size());
         assertEquals("Wrong point",List.of(new Point3D(1,1,1)),result);
 
@@ -118,7 +119,7 @@ public class PlaneTest {
 
         // ****TC9 Group: Ray is neither orthogonal nor parallel to the plane and begins in
         // the same point which appears as reference point in the plane (Q)
-        p1=plane.get_P();
+        p1=plane.get_p();
         result=plane.findIntersections(new Ray(p1,vector.normalize()));
         assertEquals("Wrong number of points", null, result);
     }

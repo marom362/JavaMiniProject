@@ -1,7 +1,6 @@
 package unitTests;
 
 import org.junit.Test;
-import primitives.Coordinate;
 import primitives.Point3D;
 import primitives.Vector;
 
@@ -214,7 +213,7 @@ public class VectorTest {
         }
         try
         {
-            Vector vector = new Vector(new Coordinate(0),new Coordinate(0), new Coordinate(0));
+            Vector vector = new Vector(0,0,0);
             fail("Failed constructing a correct Vector");
         }
         catch (IllegalArgumentException ex)

@@ -1,72 +1,103 @@
 package geometries;
 
+import elements.Material;
+import primitives.Color;
 import primitives.Point3D;
 import primitives.Ray;
-import primitives.Util;
 import primitives.Vector;
 
+import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Triangae extends Polygon
- *  triangle is a private case of a surface that has three points
- *   @author marom & haleli
- */
+import static primitives.Util.isZero;
 
+/**
+ * class Triangle extends Polygon
+ */
 public class Triangle extends Polygon {
     /**
      * constructor
-     * @param P1
-     * @param P2
-     * @param P3
+     * @param emissionLight - the emissionLight of the Triangle
+     * @param material- the material of the Triangle
+     * 3 points in the Triangle
+     * @param p1
+     * @param p2
+     * @param p3
      */
-
-    public Triangle(Point3D P1,Point3D P2,Point3D P3) {
-
-        super(P1,P2,P3);
+    public Triangle(Color emissionLight, Material material, Point3D p1, Point3D p2, Point3D p3) {
+        super(emissionLight,material,p1,p2,p3);
     }
-    /*************** Admin *****************/
+
+    /**
+     * default material=(0,0,0)
+     * @param emissionLight- the emissionLight of the Triangle
+     * 3 points in the Triangle
+     * @param p1
+     * @param p2
+     * @param p3
+     */
+    public Triangle(Color emissionLight, Point3D p1, Point3D p2, Point3D p3) {
+        super(emissionLight,p1, p2, p3);
+    }
+
+    /**
+     * default material=(0,0,0)
+     ** default emissionLight=black
+     * 3 points in the Triangle
+     * @param p1
+     * @param p2
+     * @param p3
+     */
+    public Triangle(Point3D p1, Point3D p2, Point3D p3) {
+        super(p1, p2, p3);
+    }
+
+    /**
+     * find Intersections of ray and the Triangle
+     * @param ray ray pointing toward a Gepmtry
+     * @return List of GeoPoint Intersections on the triangel
+     */
+    @Override
+    public List<GeoPoint> findIntersections(Ray ray) {
+        List<GeoPoint> planeIntersections = _plane.findIntersections(ray);
+        if (planeIntersections == null) return null;
+
+        Point3D p0 = ray.getPoint();
+        Vector v = ray.getDirection();
+
+        Vector v1 = _vertices.get(0).subtract(p0);
+        Vector v2 = _vertices.get(1).subtract(p0);
+        Vector v3 = _vertices.get(2).subtract(p0);
+
+        double s1 = v.dotProduct(v1.crossProduct(v2));
+        if (isZero(s1)) return null;
+        double s2 = v.dotProduct(v2.crossProduct(v3));
+        if (isZero(s2)) return null;
+        double s3 = v.dotProduct(v3.crossProduct(v1));
+        if (isZero(s3)) return null;
+
+        if ((s1 > 0 && s2 > 0 && s3 > 0) || (s1 < 0 && s2 < 0 && s3 < 0)) {
+            //for GeoPoint
+            List<GeoPoint> result = new LinkedList<>();
+            for (GeoPoint geo : planeIntersections) {
+                result.add(new GeoPoint(this, geo.getPoint()));
+            }
+            return result;
+        }
+
+        return null;
+
+    }
+    /**
+     *
+     * @return  string of the Triangle
+     */
     @Override
     public String toString() {
-        return "Triangae{" +
-                "_vertices=" + _vertices +
-                ", _plane=" + _plane +
-                '}';
-    }
-
-    @Override
-    public List<Point3D> findIntersections(Ray ray)
-    {
-        List<Point3D> result=this._plane.findIntersections(ray);
-        if (result==null)
-            return null;
-       Vector v1 = this._vertices.get(0).subtract(ray.getP());
-       Vector v2 = this._vertices.get(1).subtract(ray.getP());
-       Vector v3 = this._vertices.get(2).subtract(ray.getP());
-
-       Vector N1=v1.crossProduct(v2).normalize();
-       Vector N2=v2.crossProduct(v3).normalize();
-
-       double t1= Util.alignZero(ray.getVector().dotProduct(N1));
-       double t2=Util.alignZero(ray.getVector().dotProduct(N2));
-
-       if(t1==0||t2==0)
-           return null;
-
-       if (t1>0)
-       {
-           if (t2>0)
-               return result;
-           if(t2<0)
-               return null;
-       }
-        if (t1<0)
-        {
-            if (t2<0)
-                return result;
-            if(t2>0)
-                return null;
+        String result = "";
+        for (Point3D p : _vertices) {
+            result += p.toString();
         }
-        return null;
+        return result;
     }
 }

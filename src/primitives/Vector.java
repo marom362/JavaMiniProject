@@ -1,203 +1,178 @@
 package primitives;
 
-import java.util.Objects;
 /**
- * Class Vector
- * point3D _head
+ *class Vector
+ * comments are missing
  *
- * @author marom & haleli
  */
-
 public class Vector {
-
-
-
     Point3D _head;
 
     /**
-     * constructor for Vector
-     * @param _head
+     * constructor
+     * @param p - point
+     * @throws   IllegalArgumentException Point3D(0.0,0.0,0.0) not valid for vector head
      */
-    public Vector( Point3D _head) {
-        if (_head.equals(Point3D.Zero))
-            throw new IllegalArgumentException("this values are unable for a vector");
-        this._head = _head;
-    }
-
-    /**
-     * constructor for Vector
-     * @param _x
-     * @param _y
-     * @param _z
-     */
-    public Vector(Coordinate _x,Coordinate _y, Coordinate _z)
-    {
-        if(_x._coord==0 &&_y._coord==0 && _z._coord==0)
-            throw new IllegalArgumentException("/this values are unable for a vector");
-        this._head._x =_x;
-        this._head._y=_y;
-        this._head._z=_z;
-    }
-
-    public Vector(double _x,double _y, double _z)
-    {
-        if(_x==0 &&_y==0 && _z==0)
-            throw new IllegalArgumentException("//this values are unable for a vector");
-        this._head= new Point3D(_x, _y, _z);
-    }
-    /**
-     * copy constructor for Vector
-     * @param vector
-     */
-    public Vector(Vector vector) {
-        this._head = vector._head;
-    }
-
-    /**
-     * add
-     * @param vector
-     * @return newVector: Adding a vector coordinate with another vector coordinate
-     */
-    public Vector add (Vector vector)
-    {
-        Vector newVector= new Vector(
-                this._head._x._coord+vector._head._x._coord,
-                this._head._y._coord+vector._head._y._coord,
-                this._head._z._coord+vector._head._z._coord);
-        return newVector;
-    }
-
-    /**
-     *Subtract
-     * @param vector
-     * @return newVector:Subtract a vector coordinate with another vector coordinate
-     */
-    public Vector subtract ( Vector vector)
-    {
-        Vector newVector= new Vector(
-                this._head._x._coord-vector._head._x._coord,
-                this._head._y._coord-vector._head._y._coord,
-                this._head._z._coord-vector._head._z._coord);
-        return newVector;
-    }
-
-    /**
-     *scale
-     * @param scler
-     * @return vector: Multiplying each of the coordinates by scalar
-     *
-     */
-    public Vector scale(double scler)
-    {
-        Vector vector= new Vector(
-                this._head._x._coord*scler,
-                this._head._y._coord*scler,
-                this._head._z._coord*scler);
-        return vector;
-
-    }
-
-    /**
-     *
-     * @param vector
-     * @return dot Product :
-     */
-    public double dotProduct(Vector vector)
-    {
-        double scler =this._head._x._coord*vector._head._x._coord
-                +this._head._y._coord*vector._head._y._coord
-                +this._head._z._coord*vector._head._z._coord;
-        return  scler;
-    }
-
-    /**
-     *
-     * @param vector
-     * @return cross Product
-     */
-    public Vector crossProduct(Vector vector)
-    {
-
-        try {
-            Vector newVector = new Vector(
-                    this._head._y._coord * vector._head._z._coord - this._head._z._coord * vector._head._y._coord,
-                    this._head._z._coord *vector._head._x._coord - this._head._x._coord * vector._head._z._coord ,
-                    this._head._x._coord * vector._head._y._coord - this._head._y._coord * vector._head._x._coord);
-            return newVector;
+    public Vector(Point3D p) {
+        if (p.equals(Point3D.ZERO)) {
+            throw new IllegalArgumentException("Point3D(0.0,0.0,0.0) not valid for vector head");
         }
-        catch(IllegalArgumentException ex)
-        {
-            throw  ex;
-        }
+        this._head = new Point3D(p._x._coord, p._y._coord, p._z._coord);
     }
 
     /**
-     *
-     * @return length Squared
+     * constructor
+     * @param v
+     * @throws   IllegalArgumentException Point3D(0.0,0.0,0.0) not valid for vector head
      */
-    public double lengthSquared()
-    {
-        return  this._head.distanceSquared((Point3D.Zero));
+    public Vector(Vector v) {
+        this(v._head);
     }
 
     /**
-     *
-     * @return length
+     * constructor
+     *Subtraction between 2 points
+     * @param p1
+     * @param p2
+     * @throws   IllegalArgumentException Point3D(0.0,0.0,0.0) not valid for vector head
      */
-    public double length()
-    {
-        double  sqrt= Math.sqrt(lengthSquared());
-        return sqrt;
+    public Vector(Point3D p1, Point3D p2) {
+        this(p1.subtract(p2));
     }
 
     /**
-     *
-     * @return  Vector normalization by difference in length
+     * constructor
+     * 3 double
+     * @param x
+     * @param y
+     * @param z
      */
-    public Vector normalize()
-    {
-        double length=this.length();
-        Coordinate coordinate=new Coordinate(this._head._x._coord/length);
-        this._head._x= coordinate;
-        coordinate=new Coordinate(this._head._y._coord/length);
-        this._head._y=coordinate;
-        coordinate=new Coordinate(this._head._z._coord/length);
-        this._head._z=coordinate;
-        return this;
+    public Vector(double x,double y, double z) {
+        this(new Point3D(x,y,z));
     }
 
     /**
-     *
-     * @return new vector:  Vector normalization by difference in length
+     * add vector to vector
+     * @param vector
      */
-    public  Vector normalized()
+    public Vector  add(Vector vector)
     {
-        Vector vector = new Vector(this);
-        return vector.normalize();
+        return  new Vector(this._head.add(vector));
     }
-    /*************** Admin *****************/
-    @Override
-    public String toString() {
-        return "Vector{" +
-                "_head=" + _head +
-                '}';
+//*******get*******
+    public Point3D getHead() {
+        return new Point3D(_head._x._coord, _head._y._coord, _head._z._coord);
     }
 
+    /**
+     * subtract vector to vector
+     * @param vector
+     */
+    public Vector subtract(Vector vector) {
+        return  this._head.subtract(vector._head);
+    }
 
+    /**
+     * subtract vector to scalar
+     * @param scalingFacor
+     */
+    public Vector scale(double scalingFacor) {
+        return new Vector(
+                new Point3D(
+                        new Coordinate(scalingFacor * _head._x._coord),
+                        new Coordinate(scalingFacor * _head._y._coord),
+                        new Coordinate(scalingFacor * _head._z._coord)));
+    }
+
+    /**
+     * @param o
+     * @return
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Vector vector = (Vector) o;
-        return Objects.equals(_head, vector._head);
+        return _head.equals(vector._head);
+    }
+
+    /**
+     * dotProduct vector to vector
+     * @param v
+     * @return double
+     */
+    public double dotProduct(Vector v) {
+        return (this._head._x._coord * v._head._x._coord +
+                this._head._y._coord * v._head._y._coord +
+                this._head._z._coord * v._head._z._coord);
+    }
+
+    /**
+     * @param v the second vector
+     * @return new Vector for the crossproduct (this X v)
+     */
+    public Vector crossProduct(Vector v) {
+        double w1 = this._head._y._coord * v._head._z._coord - this._head._z._coord * v._head._y._coord;
+        double w2 = this._head._z._coord * v._head._x._coord - this._head._x._coord * v._head._z._coord;
+        double w3 = this._head._x._coord * v._head._y._coord - this._head._y._coord * v._head._x._coord;
+
+        return new Vector(new Point3D(w1, w2, w3));
+    }
+
+    /**
+     *
+     * @return the length Squared
+     */
+    public double lengthSquared() {
+        double xx = this._head._x._coord * this._head._x._coord;
+        double yy = this._head._y._coord * this._head._y._coord;
+        double zz = this._head._z._coord * this._head._z._coord;
+
+        return xx + yy + zz;
+
+    }
+
+    /**
+     * @return the length
+     */
+    public double length() {
+        return Math.sqrt(lengthSquared());
+    }
+
+    /**
+     * @return the same Vector after normalisation
+     * @throws ArithmeticException if length = 0
+     */
+    public Vector normalize() {
+
+        double x = this._head._x._coord;
+        double y = this._head._y._coord;
+        double z = this._head._z._coord;
+
+        double length = this.length();
+
+        if (length == 0)
+            throw new ArithmeticException("divide by Zero");
+
+        this._head._x = new Coordinate(x / length);
+        this._head._y = new Coordinate(y / length);
+        this._head._z = new Coordinate(z / length);
+
+        return this;
+    }
+
+    /**
+     * @return the new Vector after normalisation
+     * @throws ArithmeticException if length = 0
+     */
+    public Vector normalized() {
+        Vector vector = new Vector(this);
+        vector.normalize();
+        return vector;
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(_head);
-    }
-
-    public Point3D get_head() {
-        return _head;
+    public String toString() {
+        return  _head .toString();
     }
 }
