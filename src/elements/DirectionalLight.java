@@ -38,6 +38,17 @@ public class DirectionalLight extends Light implements LightSource {
         //       return _intensity;
     }
 
+    /**
+     *
+     * @param point- of the geometry
+     * @return The maximum value
+     */
+    @Override
+    public double getDistance(Point3D point) {
+        return Double.POSITIVE_INFINITY;
+    }
+
+
     //instead of getDirection()
     @Override
     public Vector getL(Point3D p) {

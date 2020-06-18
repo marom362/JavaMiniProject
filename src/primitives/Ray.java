@@ -15,7 +15,10 @@ public class Ray {
      * The direction of the ray.
      */
     private final Vector _direction;
-
+    /**
+     * constant for first moving rays size for shading rays, transparency and reflection
+     */
+    private static final double DELTA = 0.1;
     /**
      * Constructor for creating a new instance of this class
      * @param point the start of the ray.
@@ -23,6 +26,16 @@ public class Ray {
      */
     public Ray(Point3D point, Vector direction) {
         _point = new Point3D(point);
+        _direction = new Vector(direction).normalized();
+    }
+    public Ray(Point3D point, Vector direction,Vector normal) {
+        double nv=normal.dotProduct(direction.normalize());
+        if(nv>0)
+            _point = new Point3D(point.add(normal.scale(DELTA)));
+        else
+            _point = point.add(normal.scale(DELTA*(-1)));
+
+
         _direction = new Vector(direction).normalized();
     }
 
@@ -42,6 +55,7 @@ public class Ray {
     public Ray(Ray other) {
         this._point = new Point3D(other._point);
         this._direction = other._direction.normalized();
+
     }
 
     @Override

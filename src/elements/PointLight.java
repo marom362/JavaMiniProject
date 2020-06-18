@@ -65,6 +65,18 @@ public class PointLight extends Light implements LightSource {
         return (_intensity.reduce(_kC + _kL * d + _kQ * dsquared));
     }
 
+    /**
+     * Returns the distance between the light source and the point on the geometry
+     * @param point- of the geometry
+     * @return distance
+     */
+    @Override
+    public double getDistance(Point3D point)
+    {
+      return point.distance(this._position);
+    }
+
+
     // Light vector
     @Override
     public Vector getL(Point3D p) {
