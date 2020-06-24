@@ -47,6 +47,22 @@ public class Plane extends Geometry {
     }
 
     /**
+     *
+     * @param emissionLight
+     * @param material
+     * @param p1
+     * @param normal
+     */
+    public Plane(Color emissionLight, Material material, Point3D p1,Vector normal) {
+        super(emissionLight, material);
+
+        _p = new Point3D(p1);
+        _normal = normal.normalized();
+
+
+    }
+
+    /**
      * Uses the previous constructor
      * material= (0,0,0)
      * @param emissionLight-the emission of the plan

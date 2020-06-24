@@ -102,6 +102,10 @@ public class Vector {
      * @return double
      */
     public double dotProduct(Vector v) {
+        double dot=this._head._x._coord * v._head._x._coord +
+                this._head._y._coord * v._head._y._coord +
+                this._head._z._coord * v._head._z._coord;
+
         return (this._head._x._coord * v._head._x._coord +
                 this._head._y._coord * v._head._y._coord +
                 this._head._z._coord * v._head._z._coord);

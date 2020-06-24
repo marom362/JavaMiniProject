@@ -118,7 +118,8 @@ public class ReflectionRefractionTests {
     @Test
     public void trianglesSphere() {
         Scene scene = new Scene("Test scene");
-        scene.setCamera(new Camera(new Point3D(0, 0, -1000), new Vector(0, 0, 1), new Vector(0, -1, 0)));
+        scene.setCamera(new Camera(new Point3D(0, 0, -1000), new Vector(0, 0, 1), new Vector(0, -1, 0),
+                7,2000,true));
         scene.setDistance(1000);
         scene.setBackground(Color.BLACK);
         scene.setAmbientLight(new AmbientLight(new Color(java.awt.Color.WHITE), 0.15));
@@ -138,10 +139,13 @@ public class ReflectionRefractionTests {
                 new Point3D(40, -40, -115), new Vector(-1, 1, 4), 1, 4E-4, 2E-5));
 
         ImageWriter imageWriter = new ImageWriter("foreGeometriesMyTest", 200, 200, 600, 600);
-        Render render = new Render(imageWriter, scene);
+        Render render = new Render(imageWriter, scene)
+        .setMultithreading(5).setDebugPrint();
         System.out.println( new Plane(Color.BLACK, new Material(0, 0.8, 60), //
                 new Point3D(-150, 150, 115), new Point3D(150, 150, 135), new Point3D(75, -75, 150)).getNormal());
+
         render.renderImage();
+
         render.writeToImage();
     }
 }

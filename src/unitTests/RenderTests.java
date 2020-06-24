@@ -3,6 +3,8 @@ package unitTests;
 
 import elements.AmbientLight;
 import elements.Camera;
+import elements.Material;
+import elements.SpotLight;
 import geometries.Sphere;
 import geometries.Triangle;
 import org.junit.jupiter.api.Test;
@@ -156,8 +158,8 @@ public class RenderTests {
         Scene scene;
         scene = new Scene.SceneBuilder("Test scene")
                 .addAmbientLight(new AmbientLight(Color.WHITE, 0.3))
-                .addCamera(new Camera(Point3D.ZERO, new Vector(0, 0, 1), new Vector(0, -1, 0)))
-                .addDistance(100)
+                .addCamera(new Camera(Point3D.ZERO, new Vector(0, 0, 1), new Vector(0, -1, 0),20,20,true))
+                .addDistance(1000)
                 .addBackground(Color.BLACK)
                 .build();
 
@@ -188,6 +190,32 @@ public class RenderTests {
 
         render.renderImage();
         render.printGrid(50, java.awt.Color.WHITE);
+        render.writeToImage();
+    }
+
+    @Test
+    public void trianglesSphere() {
+        Scene scene = new Scene("Test scene");
+        scene.setCamera(new Camera(new Point3D(0, 0, -1000), new Vector(0, 0, 1), new Vector(0, -1, 0),20,900,true));
+        scene.setDistance(500);
+        scene.setBackground(Color.WHITE);
+        scene.setAmbientLight(new AmbientLight(new Color(java.awt.Color.WHITE), 0.15));
+
+        scene.addGeometries( //
+                new Triangle(Color.BLACK, new Material(0, 0.8, 60), //
+                        new Point3D(-150, 150, 115), new Point3D(150, 150, 135), new Point3D(75, -75, 150)), //
+                new Triangle(Color.BLACK, new Material(0, 0.8, 60), //
+                        new Point3D(-150, 150, 115), new Point3D(-70, -70, 140), new Point3D(75, -75, 150)), //
+                new Sphere(new Color(java.awt.Color.BLUE), new Material(0.5, 0.5, 30), // )
+                        30, new Point3D(0, 0, 115)));
+
+        scene.addLights(new SpotLight(new Color(700, 400, 400), //
+                new Point3D(40, -40, -115), new Vector(-1, 1, 4), 1, 4E-4, 2E-5));
+
+        ImageWriter imageWriter = new ImageWriter("hh", 200, 200, 600, 600);
+        Render render = new Render(imageWriter, scene);
+
+        render.renderImage();
         render.writeToImage();
     }
 

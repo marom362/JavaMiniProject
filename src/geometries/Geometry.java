@@ -56,6 +56,10 @@ public abstract class Geometry implements Intersectable {
         return (_emission);
     }
 
+    public Color getEmissionLight(GeoPoint point) {
+        return getEmissionLight();
+    }
+
     public Material getMaterial() {
 
         return _material;
