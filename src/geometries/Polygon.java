@@ -116,7 +116,13 @@ public class Polygon extends Geometry {
 
         Vector v1 = _vertices.get(1).subtract(p0);
         Vector v2 = _vertices.get(0).subtract(p0);
-        double sign = v.dotProduct(v1.crossProduct(v2));
+        double sign=0;
+        try{
+        sign = v.dotProduct(v1.crossProduct(v2));}
+        catch (IllegalArgumentException e)
+        {
+            System.out.println(this._vertices);
+        }
         if (isZero(sign))
             return null;
 

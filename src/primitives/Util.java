@@ -1,5 +1,7 @@
 package primitives;
 
+import static java.lang.StrictMath.abs;
+
 /**
  * Util class is used for some internal utilities, e.g. controlling accuracy
  *
@@ -39,5 +41,17 @@ public abstract class Util {
      */
     public static double alignZero(double number) {
         return getExp(number) < ACCURACY ? 0.0 : number;
+    }
+
+    public static boolean isEqualsColor(Color c1,Color c2 )
+    {
+       if(abs(c1.getColor().getBlue()-c2.getColor().getBlue())>=5)
+           return false;
+        if(abs(c1.getColor().getGreen()-c2.getColor().getGreen())>=5)
+            return false;
+        if(abs(c1.getColor().getRed()-c2.getColor().getRed())>=5)
+            return false;
+        return true;
+
     }
 }

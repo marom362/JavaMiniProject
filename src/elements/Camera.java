@@ -120,6 +120,10 @@ public class Camera {
 
     }
 
+    public boolean isDepthOfFiled() {
+        return DepthOfFiled;
+    }
+
     /**
      * construct Rays Through Pixel
      * call constructRaysForDepthOfField
@@ -132,7 +136,7 @@ public class Camera {
      * @param screenHeight
      * @return list of rays throw the focal point
      */
-    public List<Ray> constructRaysThroughPixel(int nX, int nY,
+   public List<Ray> constructRaysThroughPixel(int nX, int nY,
                                               int j, int i, double screenDistance,
                                               double screenWidth, double screenHeight)
     {
@@ -143,7 +147,9 @@ public class Camera {
         if(this.DepthOfFiled==false)
             return List.of( ray);
 
-        return constructRaysForDepthOfField(ray,screenDistance);
+
+        Point3D edgePoint=_p0.add(_vUp.scale((_apertureSize/2)).subtract(_vRight.scale((_apertureSize/2))));
+        return constructRaysForDepthOfField(ray,edgePoint,_apertureSize);
 
     }
 
@@ -162,11 +168,57 @@ public class Camera {
     }
 
     /**
-     * construct Rays For Depth Of Field
+     *construct Rays For Depth Of Field &
      * @param ray
-     * @param screenDistance
-     * @return list of ray
+     * @param p1
+     * @param _apertureSize
+     * @return list of 4 rays
      */
+    public List<Ray> constructRaysForDepthOfField(Ray ray,Point3D p1,double _apertureSize )
+    {
+
+        Point3D focalPoint=this.findFocalPoint(ray);
+        List<Ray> rays=new ArrayList<>();
+        Point3D p2=p1.add(_vRight.scale(_apertureSize));
+        Point3D p3=p2.subtract(_vUp.scale(_apertureSize));
+        Point3D p4=p3.subtract(_vRight.scale(_apertureSize));
+
+        rays.add(new Ray(p1,new Vector(focalPoint.subtract(p1))));
+        rays.add(new Ray(p2,new Vector(focalPoint.subtract(p2))));
+        rays.add(new Ray(p3,new Vector(focalPoint.subtract(p3))));
+        rays.add(new Ray(p4,new Vector(focalPoint.subtract(p4))));
+        rays.add(ray);
+        //Ray ray=constructRayThroughPixel( nX, nY, j, i, screenDistance, screenWidth, screenHeight);
+        /*Point3D focalPoint=this.findFocalPoint(ray);
+        //width and height are the number of pixels in the rows
+        //and columns of the view plane
+        double width = this._apertureSize;
+        double height = this._apertureSize;
+
+        //Nx and Ny are the width and height of the image.
+        int Nx = 2; //columns
+        int Ny = 2; //rows
+        double cosine=_vTo.dotProduct(ray.getDirection());
+        List<Ray> rays=new ArrayList<>();
+
+        Point3D point1=p1.add(_vRight.scale((height/Ny))).add(_vUp.scale((0.5+0)*(width/Nx)));
+        Point3D point2= p1.add(_vRight.scale((0.5+0)*(height/Ny))).add(_vUp.scale((0.5+1)*(width/Nx)));
+        Point3D point3= p1.add(_vRight.scale((0.5+1)*(height/Ny))).add(_vUp.scale((0.5+0)*(width/Nx)));
+        Point3D point4= p1.add(_vRight.scale((0.5+1)*(height/Ny))).add(_vUp.scale((0.5+1)*(width/Nx)));
+        Vector vector1=focalPoint.subtract(point1);
+        rays.add(new Ray(point1, vector1));
+        Vector vector2=focalPoint.subtract(point2);
+        rays.add(new Ray(point2, vector2));
+        Vector vector3=focalPoint.subtract(point3);
+        rays.add(new Ray(point3, vector3));
+        Vector vector4=focalPoint.subtract(point4);
+        rays.add(new Ray(point4, vector4));*/
+
+
+        return rays;
+
+
+    }
     public List<Ray> constructRaysForDepthOfField(Ray ray,double screenDistance)
     {
         //Ray ray=constructRayThroughPixel( nX, nY, j, i, screenDistance, screenWidth, screenHeight);
@@ -177,8 +229,8 @@ public class Camera {
         double height = this._apertureSize;
 
         //Nx and Ny are the width and height of the image.
-        int Nx = 9; //columns
-        int Ny = 9; //rows
+        int Nx = 13; //columns
+        int Ny = 13; //rows
         double cosine=_vTo.dotProduct(ray.getDirection());
         double distance=screenDistance/cosine;
         Point3D p=ray.getTargetPoint(distance);

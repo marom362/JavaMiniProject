@@ -2,10 +2,15 @@ package ObjectProject1;
 
 import elements.Material;
 import geometries.Geometries;
+import geometries.Geometry;
 import geometries.Polygon;
+import geometries.Sphere;
 import primitives.Color;
 import primitives.Point3D;
 import primitives.Vector;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A class that makes up a snooker table with rectangles
@@ -59,7 +64,7 @@ public class Table
 
         Material materialWood=new Material(0.7,0.7,200);
         Material materialGreen=new Material(0.7,0.7,100);
-        Color colorWood=new Color(77,18,0);
+        Color colorWood=new Color(60,10,0);
         Color colorGreen=new Color(10,135,47);
 
 
@@ -68,6 +73,7 @@ public class Table
         Point3D point3=point2.add(lengthVec.scale(tableLength));
         Point3D point4=position.add(lengthVec.scale(tableLength));
         Polygon TablePlane=new Polygon(colorGreen,materialGreen,point1, point2, point3, point4);
+
 
         Point3D point111=point1.subtract(widthVec.scale(edgeWidth));
         Point3D point112=point111.add(lengthVec.scale((tableLength-holeSize)/2));
@@ -192,13 +198,168 @@ public class Table
         Polygon rect52=new Polygon(colorWood,materialWood,point521, point431, point432,point522);
 
 
+        Polygon rect53=new Polygon(colorWood,materialWood,point431,point521,point511,point441);
+        Polygon rect54=new Polygon(colorWood,materialWood,point432,point522,point512,point442);
 
 
+
+        Point3D point611=point511.add(heightVec.scale(2).add(widthVec.scale(2)).subtract(lengthVec.scale(2)));
+        Point3D point612=point512.add(heightVec.scale(2).subtract(widthVec.scale(2))).subtract(lengthVec.scale(2));
+        Point3D point613=point611.subtract(heightVec.scale(4));
+        Point3D point614=point612.subtract(heightVec.scale(4));
+        Polygon rect61=new Polygon(colorWood,materialWood,point611,point612,point614,point613);
+
+
+        Point3D point621=point521.add(heightVec.scale(2).add(widthVec.scale(2)).subtract(lengthVec.scale(2)));
+        Point3D point622=point621.subtract(heightVec.scale(4));
+        Polygon rect62=new Polygon(colorWood,materialWood,point621,point622,point613,point611);
+
+
+        Point3D point631=point522.add(heightVec.scale(2).add(widthVec.scale(2)).subtract(lengthVec.scale(2)));
+        Point3D point632=point631.subtract(heightVec.scale(4));
+        Polygon rect63=new Polygon(colorWood,materialWood,point631,point632,point622,point621);
+
+
+
+        Polygon rect64=new Polygon(colorWood,materialWood,point611,point613,point632,point631);
+
+        Polygon rect65=new Polygon(colorWood,materialWood,point612,point611,point621,point631);
+
+
+
+
+
+
+
+
+        double legStartLength=18;
+        double legStartWidth=1;
+
+        List<Geometry> geometries=CreateLeg(point1,legStartLength,legStartWidth, heightVec,widthVec,lengthVec,colorWood,  materialWood );
+        for (Geometry geometry:geometries
+             ) {
+            tableParts.add(geometry);
+
+        }
+        double len=15.033296378372908;
+
+         geometries=CreateLeg(point2,legStartLength,legStartWidth, heightVec,widthVec.scale(-1),lengthVec,colorWood,  materialWood );
+        for (Geometry geometry:geometries
+        ) {
+            tableParts.add(geometry);
+
+        }
+        geometries=CreateLeg(point3,legStartLength,legStartWidth, heightVec,widthVec.scale(-1),lengthVec.scale(-1),colorWood,  materialWood );
+        for (Geometry geometry:geometries
+        ) {
+            tableParts.add(geometry);
+
+        }
+        geometries=CreateLeg(point4,legStartLength,legStartWidth, heightVec,widthVec,lengthVec.scale(-1),colorWood,  materialWood );
+        for (Geometry geometry:geometries
+        ) {
+            tableParts.add(geometry);
+
+        }
 
 
         tableParts.add(TablePlane,rect11,rect12,rect13,rect14,rect15,rect16,rect21,rect22,rect23
-        ,rect24,rect25,rect26,rect31,rect32,rect33,rect34,rect35,rect36,rect41,rect42,rect43,rect44,rect51,rect52);
+        ,rect24,rect25,rect26,rect31,rect32,rect33,rect34,rect35,rect36,rect41,rect42,rect43,rect44,rect51,
+                rect52,rect53,rect54,rect61,rect62,rect63,rect64,rect65);
 
+
+
+    }
+   private List<Geometry> CreateLeg(Point3D point,double legStartLength,double legStartWidth, Vector heightVec,Vector widthV,Vector lengthV,Color colorWood, Material materialWood )
+    {
+        Point3D pointFirst=point;
+        Point3D point1=point.subtract(heightVec.scale(legStartLength));
+        Point3D point2,point3,point4;
+        Polygon rect;
+        List<Geometry> geometries=new ArrayList<>();
+        for(int i=0; i<14; i++)
+        {
+            if(i%2==0)
+                point2=point.add(widthV.scale(legStartWidth).subtract(lengthV.scale(legStartWidth)));
+            else
+                point2=point.add(widthV.scale(legStartWidth).add(lengthV.scale(legStartWidth)));
+            point3=point2.subtract(heightVec.scale(legStartLength));
+            geometries.add(new Polygon(colorWood,materialWood,point,point2,point3,point1));
+            point=point2;
+            point1=point3;
+
+
+        }
+
+
+        for(int i=0; i<14; i++)
+        {
+            if(i%2==0)
+                point2=point.add(lengthV.scale(legStartWidth).subtract(widthV.scale(legStartWidth)));
+            else
+                point2=point.add(lengthV.scale(legStartWidth).add(widthV.scale(legStartWidth)));
+            point3=point2.subtract(heightVec.scale(legStartLength));
+            geometries.add(new Polygon(colorWood, materialWood, point, point2, point3, point1));
+            point=point2;
+            point1=point3;
+
+
+        }
+        Point3D pointFinal=point;
+
+        for(int i=0; i<14; i++) {
+            if (i % 2 == 0)
+                point2 = point.subtract(widthV.scale(legStartWidth).subtract(lengthV.scale(legStartWidth)));
+            else
+                point2 = point.subtract(widthV.scale(legStartWidth).add(lengthV.scale(legStartWidth)));
+            point3 = point2.subtract(heightVec.scale(legStartLength));
+            geometries.add(new Polygon(colorWood, materialWood, point, point2, point3, point1));
+            point = point2;
+            point1 = point3;
+        }
+        for(int i=0; i<14; i++)
+        {
+            if(i%2==0)
+                point2=point.subtract(lengthV.scale(legStartWidth).subtract(widthV.scale(legStartWidth)));
+            else
+                point2=point.subtract(lengthV.scale(legStartWidth).add(widthV.scale(legStartWidth)));
+            point3=point2.subtract(heightVec.scale(legStartLength));
+            geometries.add(new Polygon(colorWood, materialWood, point, point2, point3, point1));
+            point=point2;
+            point1=point3;
+
+
+        }
+        //double d=pointFirst.subtract(point).length();
+        Vector vector=pointFirst.subtract(pointFinal);
+        Point3D center=pointFirst.subtract(vector.scale(0.5)).subtract(heightVec.scale(20));
+        Sphere ball1=new Sphere(colorWood,materialWood,4,center);
+        geometries.add(ball1);
+
+
+        //double miniDis=;
+        double miniRad=0.95;
+        double radius=7;
+        center=center.subtract(heightVec.scale(radius));
+        for (int i = 0; i <10 ; i++) {
+            center=center.subtract(heightVec.scale(0.3*radius));
+            radius*=miniRad;
+            geometries.add(new Sphere(colorWood,materialWood,radius,center));
+
+
+            
+        }
+        miniRad=0.967;
+        for (int i = 0; i <5 ; i++) {
+            center=center.subtract(heightVec.scale(0.2*radius));
+            radius/=miniRad;
+            geometries.add(new Sphere(colorWood,materialWood,radius,center));
+
+        }
+       // Polygon p=new Polygon(new Color(200,0,20),new Material(0,0,0,0,0),center,center.add(widthV),center.add(lengthV));
+       // tableParts.add(p);
+       // System.out.println(center.subtract(heightVec.scale(radius)));
+        return geometries;
 
 
     }

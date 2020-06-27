@@ -85,4 +85,8 @@ public class PointLight extends Light implements LightSource {
         }
         return p.subtract(_position).normalize();
     }
+
+    public Point3D get_position() {
+        return _position;
+    }
 }

@@ -1,5 +1,7 @@
 package geometries;
 
+import elements.Material;
+import primitives.Color;
 import primitives.Point3D;
 import primitives.Ray;
 import primitives.Vector;
@@ -28,8 +30,20 @@ public class Cylinder extends Tube {
      * @param _height height of the cylinder (from the referenced point)
      */
     public Cylinder(double _radius, Ray _ray, double _height) {
-        super(_radius, _ray);
+      this(Color.BLACK,new Material(0,0,0),_radius,_ray,_height);
+
+    }
+
+    public Cylinder(Color color, Material material,double _radius, Ray _ray, double _height) {
+        super(color,material,_radius, _ray);
+        _emission=color;
+        _material=material;
         this._height = _height;
+        System.out.println("HALELI"+getEmissionLight().getColor());
+    }
+
+    public Cylinder(Cylinder cylinder) {
+        this(cylinder._emission,cylinder._material,cylinder._radius,cylinder._ray,cylinder._height);
     }
     //************get**********
 
@@ -65,13 +79,14 @@ public class Cylinder extends Tube {
 
     @Override
     public List<GeoPoint> findIntersections(Ray ray) {
-        List<GeoPoint> intersections = super.findIntersections(ray);
-        List<GeoPoint> result = new LinkedList<>();
-        if (intersections != null) {
-            for (GeoPoint geoPoint : intersections) {
-                result.add(new GeoPoint(this, geoPoint.getPoint()));
-            }
-            return result;
+                List<GeoPoint> intersections = super.findIntersections(ray);
+                List<GeoPoint> result = new LinkedList<>();
+                if (intersections != null) {
+                    for (GeoPoint geoPoint : intersections)
+                    {
+                        result.add(new GeoPoint(this, geoPoint.getPoint()));
+                    }
+                    return result;
         }
         return null;
     }

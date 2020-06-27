@@ -1,11 +1,17 @@
 package renderer;
 
-import elements.*;
-import geometries.*;
-import primitives.*;
+import elements.Camera;
+import elements.LightSource;
+import elements.Material;
+import geometries.Intersectable;
 import geometries.Intersectable.GeoPoint;
+import primitives.Color;
+import primitives.Point3D;
+import primitives.Ray;
+import primitives.Vector;
 import scene.Scene;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static primitives.Util.alignZero;
@@ -333,6 +339,39 @@ public class Render {
     }
 
 
+    private Color calcColor(List<Ray> rays,double size,int level)
+    {
+        if(level==4)
+            return  calcColor(findClosestIntersection(rays.get(0)),rays.get(0));
+        GeoPoint gp;
+        List<Color> colors=new ArrayList<>();
+        for (int i = 0; i <4 ; i++) {
+            gp=findClosestIntersection(rays.get(i));
+            colors.add(calcColor(gp,rays.get(i)));
+        }
+     /*   if(isEqualsColor(colors.get(0),colors.get(1))&&
+                isEqualsColor(colors.get(0),colors.get(2))&&
+                isEqualsColor(colors.get(0),colors.get(3)))
+            return colors.get(0)*/
+        Point3D p1=rays.get(0).getPoint();
+        List<Ray> rays1=_scene.getCamera().constructRaysForDepthOfField(rays.get(4),p1,size/2);
+        Point3D p2=p1.add(_scene.getCamera().getVRight().scale(size));
+        List<Ray> rays2=_scene.getCamera().constructRaysForDepthOfField(rays.get(4),p2,size/2);
+        Point3D p3=p2.subtract(_scene.getCamera().getVUp().scale(size));
+        List<Ray> rays3=_scene.getCamera().constructRaysForDepthOfField(rays.get(4),p3,size/2);
+        Point3D p4=p3.subtract(_scene.getCamera().getVRight().scale(size));
+        List<Ray> rays4=_scene.getCamera().constructRaysForDepthOfField(rays.get(4),p4,size/2);
+
+        Color color=calcColor(rays1,size/2,level+1).scale(0.25).add(
+                calcColor(rays2,size/2,level+1).scale(0.25)).add(
+                calcColor(rays3, size/2,level+1).scale(0.25)).add(
+                calcColor(rays4, size/2,level+1).scale(0.25));
+        return color;
+
+
+    }
+
+
     private Color colorPoint(Point3D p)
     {
         Ray ray=new Ray(_scene.getCamera().getP0(), p.subtract(_scene.getCamera().getP0()));
@@ -342,7 +381,11 @@ public class Render {
     }
     private Color calcColor(List<Ray> rays)
     {
-        Color color;
+        if(this._scene.getCamera().isDepthOfFiled()==false) {
+            GeoPoint gp = findClosestIntersection(rays.get(0));
+            return calcColor(gp, rays.get(0));
+        }
+        /*Color color;
         int size=rays.size();
         double sumRed=0;
         double sumGreen=0;
@@ -355,7 +398,8 @@ public class Render {
             sumGreen+=color.getColor().getGreen();
             sumBlue+=color.getColor().getBlue();
         }
-        return new Color(sumRed/size,sumGreen/size,sumBlue/size);
+        return new Color(sumRed/size,sumGreen/size,sumBlue/size);*/
+        return calcColor( rays, _scene.getCamera().getApertureSize(),1);
 
     }
 
