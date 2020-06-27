@@ -7,6 +7,7 @@ import primitives.Ray;
 import primitives.Vector;
 
 import java.util.List;
+import java.util.Objects;
 
 import static primitives.Util.alignZero;
 
@@ -55,16 +56,6 @@ public class Sphere extends RadialGeometry {
      */
     public Sphere(double radius, Point3D center) {
         this(Color.BLACK,new Material(0,0,0),radius,center);
-    }
-
-    /**
-     *
-     * @return string of the params Sphere
-     */
-    @Override
-    public String toString() {
-        return String.format
-                ("point: " + _center + ", radius: " + _radius);
     }
 
     /**
@@ -122,5 +113,31 @@ public class Sphere extends RadialGeometry {
             return List.of(new GeoPoint(this,(ray.getTargetPoint(t1))));
         else
             return List.of(new GeoPoint(this,(ray.getTargetPoint(t2))));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Sphere sphere = (Sphere) o;
+        return Objects.equals(_center, sphere._center);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(_center);
+    }
+
+    /**
+     * @return string of the params Sphere
+     */
+    @Override
+    public String toString() {
+        return "Sphere{" +
+                "_center=" + _center +
+                ", _radius=" + _radius +
+                ", _emission=" + _emission +
+                ", _material=" + _material +
+                '}';
     }
 }

@@ -1,4 +1,4 @@
-package renderer;
+package ObjectProject1;
 
 import elements.Material;
 import geometries.Geometries;

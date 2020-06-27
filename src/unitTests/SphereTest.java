@@ -25,7 +25,7 @@ public class SphereTest {
     public void getNormal()
         {
             Sphere sphere=new Sphere(5,new Point3D(1,2,2));
-            Vector normal=new Vector(0,4d/5,3d/5);
+            Vector normal=new Vector(0,-4d/5,-3d/5).normalize();
             assertTrue(sphere.getNormal(new Point3D(1,-2,-1)).equals(normal));
 
 

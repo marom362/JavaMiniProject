@@ -76,22 +76,22 @@ public class Table
 
 
         Point3D point111=point1.subtract(widthVec.scale(edgeWidth));
-        Point3D point112=point111.add(lengthVec.scale((tableLength-holeSize)/2));
+        Point3D point112=point111.add(lengthVec.scale((tableLength+1-holeSize)/2));
         Point3D point113=point112.add(widthVec.scale(edgeWidth));
         Polygon rect11=new Polygon(colorGreen,materialGreen,point1, point111, point112,point113);
 
         Point3D point121=point2.add(widthVec.scale(edgeWidth));
-        Point3D point122=point121.add(lengthVec.scale((tableLength-holeSize)/2));
+        Point3D point122=point121.add(lengthVec.scale((tableLength+1-holeSize)/2));
         Point3D point123=point122.subtract(widthVec.scale(edgeWidth));
         Polygon rect12=new Polygon(colorGreen,materialGreen,point2, point121, point122,point123);
 
         Point3D point131=point3.add(widthVec.scale(edgeWidth));
-        Point3D point132=point131.subtract(lengthVec.scale((tableLength-holeSize)/2));
+        Point3D point132=point131.subtract(lengthVec.scale((tableLength+1-holeSize)/2));
         Point3D point133=point132.subtract(widthVec.scale(edgeWidth));
         Polygon rect13=new Polygon(colorGreen,materialGreen,point3, point131, point132,point133);
 
         Point3D point141=point4.subtract(widthVec.scale(edgeWidth));
-        Point3D point142=point141.subtract(lengthVec.scale((tableLength-holeSize)/2));
+        Point3D point142=point141.subtract(lengthVec.scale((tableLength+1-holeSize)/2));
         Point3D point143=point142.add(widthVec.scale(edgeWidth));
         Polygon rect14=new Polygon(colorGreen,materialGreen,point4, point141, point142,point143);
 
@@ -203,27 +203,27 @@ public class Table
 
 
 
-        Point3D point611=point511.add(heightVec.scale(2).add(widthVec.scale(2)).subtract(lengthVec.scale(2)));
-        Point3D point612=point512.add(heightVec.scale(2).subtract(widthVec.scale(2))).subtract(lengthVec.scale(2));
-        Point3D point613=point611.subtract(heightVec.scale(4));
-        Point3D point614=point612.subtract(heightVec.scale(4));
+        Point3D point611=point511.add(heightVec.scale(2).add(widthVec.scale(15)).subtract(lengthVec.scale(15)));
+        Point3D point612=point512.add(heightVec.scale(2).subtract(widthVec.scale(15))).subtract(lengthVec.scale(15));
+        Point3D point613=point611.subtract(heightVec.scale(12));
+        Point3D point614=point612.subtract(heightVec.scale(12));
         Polygon rect61=new Polygon(colorWood,materialWood,point611,point612,point614,point613);
 
 
-        Point3D point621=point521.add(heightVec.scale(2).add(widthVec.scale(2)).subtract(lengthVec.scale(2)));
-        Point3D point622=point621.subtract(heightVec.scale(4));
+        Point3D point621=point521.add(heightVec.scale(2).add(widthVec.scale(15)).add(lengthVec.scale(15)));
+        Point3D point622=point621.subtract(heightVec.scale(12));
         Polygon rect62=new Polygon(colorWood,materialWood,point621,point622,point613,point611);
 
 
-        Point3D point631=point522.add(heightVec.scale(2).add(widthVec.scale(2)).subtract(lengthVec.scale(2)));
-        Point3D point632=point631.subtract(heightVec.scale(4));
+        Point3D point631=point522.add(heightVec.scale(2).subtract(widthVec.scale(15)).add(lengthVec.scale(15)));
+        Point3D point632=point631.subtract(heightVec.scale(12));
         Polygon rect63=new Polygon(colorWood,materialWood,point631,point632,point622,point621);
 
 
 
-        Polygon rect64=new Polygon(colorWood,materialWood,point611,point613,point632,point631);
+        Polygon rect64=new Polygon(colorWood,materialWood,point612,point614,point632,point631);
 
-        Polygon rect65=new Polygon(colorWood,materialWood,point612,point611,point621,point631);
+        Polygon rect65=new Polygon(colorWood,materialWood,point631,point621,point611,point612);
 
 
 
